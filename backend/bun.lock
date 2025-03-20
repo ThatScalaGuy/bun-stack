@@ -8,11 +8,11 @@
         "@elysiajs/server-timing": "^1.2.1",
         "@elysiajs/static": "^1.2.0",
         "@elysiajs/swagger": "^1.2.2",
-        "elysia": "latest",
+        "elysia": "^1.2.25",
         "http-proxy-middleware": "^3.0.3",
       },
       "devDependencies": {
-        "bun-types": "latest",
+        "bun-types": "^1.2.5",
       },
     },
   },
