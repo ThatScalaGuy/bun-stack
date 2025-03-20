@@ -4,18 +4,25 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "bun run --watch src/index.ts",
-    "build": "bun build --compile --minify-whitespace --minify-syntax --target bun --outfile server ./src/index.ts"
+    "build": "bun build --compile --minify-whitespace --minify-syntax --target bun --outfile server ./src/index.ts",
+    "migration": "bunx drizzle-kit generate --dialect sqlite --schema ./src/database/schema.ts"
   },
   "dependencies": {
     "@elysiajs/cors": "^1.2.0",
     "@elysiajs/server-timing": "^1.2.1",
     "@elysiajs/static": "^1.2.0",
     "@elysiajs/swagger": "^1.2.2",
+    "drizzle-orm": "^0.40.1",
+    "drizzle-typebox": "^0.3.0",
     "elysia": "^1.2.25",
     "http-proxy-middleware": "^3.0.3"
   },
   "devDependencies": {
-    "bun-types": "^1.2.5"
+    "bun-types": "^1.2.5",
+    "drizzle-kit": "^0.30.5"
+  },
+  "override": {
+      "@sinclair/typebox": "0.34.0"
   },
   "module": "src/index.js"
 }

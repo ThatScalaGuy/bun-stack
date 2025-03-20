@@ -1,9 +1,15 @@
 {
     "name": "bun-stack",
-    "module": "index.ts",
-    "type": "module",
+    "private": true,
+    "workspaces": [
+      "backend", "frontend"
+    ],
+    "scripts": {
+      "dev": "concurrently \" cd backend && bun run dev\" \"cd frontend && bun run dev\""
+    },
     "devDependencies": {
-      "@types/bun": "latest"
+      "@types/bun": "latest",
+      "concurrently": "latest"
     },
     "peerDependencies": {
       "typescript": "^5.8.2"
