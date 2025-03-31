@@ -183,8 +183,8 @@ export const SecurityPage = () => {
                                     className={styles.input}
                                     {...passwordRegister('confirmPassword', {
                                         required: 'Please confirm your password',
-                                        validate: value =>
-                                            value === passwordRegister('newPassword').value || 'Passwords do not match',
+                                        validate: (value, form) =>
+                                            value === form.newPassword || 'Passwords do not match',
                                     })}
                                 />
                                 {passwordErrors.confirmPassword && (

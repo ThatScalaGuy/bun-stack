@@ -12,10 +12,14 @@
 .content {
   background-color: var(--color-background);
   border-radius: var(--border-radius-lg);
+  border: 1px solid var(--color-border);
   overflow: hidden;
 }
 
 .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: var(--spacing-6);
 }
 
@@ -171,7 +175,65 @@
   margin-left: var(--spacing-2);
 }
 
+.grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--spacing-6);
+}
+
+.mainSection {
+  background-color: var(--color-background);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+.sideSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+.tipsCard {
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-6);
+}
+
+.tipsTitle {
+  font-size: var(--font-size-lg);
+  color: var(--color-text);
+  margin-bottom: var(--spacing-4);
+  font-weight: 600;
+}
+
+.tipsList {
+  padding-left: var(--spacing-5);
+}
+
+.tipItem {
+  margin-bottom: var(--spacing-3);
+  line-height: 1.5;
+  color: var(--color-text);
+}
+
+.tipsText {
+  line-height: 1.5;
+  color: var(--color-text);
+}
+
 /* Responsive styles */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .sideSection {
+    order: 2;
+  }
+}
+
 @media (max-width: 768px) {
   .container {
     padding: var(--spacing-4);
@@ -199,5 +261,24 @@
   
   .formActions > * {
     width: 100%;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-2);
+    margin-bottom: var(--spacing-4);
+  }
+  
+  .title {
+    font-size: var(--font-size-2xl);
+  }
+  
+  .grid {
+    gap: var(--spacing-4);
+  }
+  
+  .tipsCard {
+    padding: var(--spacing-4);
   }
 }

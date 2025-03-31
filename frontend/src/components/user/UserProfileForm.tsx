@@ -4,6 +4,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { UpdateProfileData } from '../../types/user';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useBackend } from '../../context/BackendContext';
+import { FormGroup } from '../../design-system/components/FormGroup';
 import styles from './UserProfileForm.module.css';
 
 export const UserProfileForm = () => {
@@ -17,9 +18,8 @@ export const UserProfileForm = () => {
     useEffect(() => {
         if (user) {
             reset({
-                firstName: user.firstName,
-                lastName: user.lastName,
-                username: user.username,
+                displayName: user.displayName || '',
+                bio: user.bio || '',
             });
         }
     }, [user, reset]);
@@ -41,83 +41,68 @@ export const UserProfileForm = () => {
     }
 
     return (
-        <div className={styles.container}>
-            <h2>Edit Profile</h2>
+        <div className={styles.card}>
+            <div className={styles.cardHeader}>
+                <h2 className={styles.cardTitle}>Personal Information</h2>
+            </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-                <div className={styles.formRow}>
-                    <div className={styles.formGroup}>
-                        <label htmlFor="firstName">First Name</label>
-                        <input
-                            id="firstName"
-                            className={styles.input}
-                            {...register('firstName', {
-                                required: 'First name is required',
-                                minLength: {
-                                    value: 2,
-                                    message: 'First name must be at least 2 characters'
-                                }
-                            })}
-                        />
-                        {errors.firstName && <span className={styles.error}>{errors.firstName.message}</span>}
-                    </div>
-
-                    <div className={styles.formGroup}>
-                        <label htmlFor="lastName">Last Name</label>
-                        <input
-                            id="lastName"
-                            className={styles.input}
-                            {...register('lastName', {
-                                required: 'Last name is required',
-                                minLength: {
-                                    value: 2,
-                                    message: 'Last name must be at least 2 characters'
-                                }
-                            })}
-                        />
-                        {errors.lastName && <span className={styles.error}>{errors.lastName.message}</span>}
-                    </div>
-                </div>
-
-                <div className={styles.formGroup}>
-                    <label htmlFor="username">Username</label>
+                <FormGroup
+                    label="Display Name"
+                    error={errors.displayName?.message}
+                    required
+                >
                     <input
-                        id="username"
                         className={styles.input}
-                        {...register('username', {
-                            required: 'Username is required',
+                        {...register('displayName', {
+                            required: 'Display name is required',
                             minLength: {
-                                value: 3,
-                                message: 'Username must be at least 3 characters'
-                            },
-                            pattern: {
-                                value: /^[a-zA-Z0-9_]+$/,
-                                message: 'Username can only contain letters, numbers, and underscores'
+                                value: 2,
+                                message: 'Display name must be at least 2 characters'
                             }
                         })}
                     />
-                    {errors.username && <span className={styles.error}>{errors.username.message}</span>}
-                </div>
+                </FormGroup>
 
-                <div className={styles.infoGroup}>
-                    <label>Email</label>
+                <FormGroup
+                    label="Bio"
+                    error={errors.bio?.message}
+                    helperText="Tell us a bit about yourself (optional)"
+                >
+                    <textarea
+                        className={`${styles.input} ${styles.textarea}`}
+                        rows={4}
+                        {...register('bio', {
+                            maxLength: {
+                                value: 500,
+                                message: 'Bio cannot exceed 500 characters'
+                            }
+                        })}
+                    />
+                </FormGroup>
+
+                <FormGroup
+                    label="Email"
+                >
                     <div className={styles.readonlyField}>
                         {user.email}
-                        {user.isVerified ? (
+                        {(user.isEmailVerified || user.isVerified) ? (
                             <span className={styles.verifiedBadge}>✓ Verified</span>
                         ) : (
                             <span className={styles.unverifiedBadge}>Not Verified</span>
                         )}
                     </div>
-                </div>
+                </FormGroup>
 
-                <button
-                    type="submit"
-                    className={styles.button}
-                    disabled={updateProfile.isPending}
-                >
-                    {updateProfile.isPending ? 'Saving...' : 'Save Changes'}
-                </button>
+                <div className={styles.formActions}>
+                    <button
+                        type="submit"
+                        className={styles.button}
+                        disabled={updateProfile.isPending}
+                    >
+                        {updateProfile.isPending ? 'Saving...' : 'Save Changes'}
+                    </button>
+                </div>
             </form>
 
             {updateProfile.isSuccess && (

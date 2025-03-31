@@ -1,10 +1,14 @@
 export interface User {
     id: string;
     email: string;
-    firstName: string;
-    lastName: string;
-    username: string;
-    isVerified: boolean;
+    displayName: string;
+    firstName?: string;
+    lastName?: string;
+    username?: string;
+    bio?: string | null;
+    avatarUrl?: string | null;
+    isEmailVerified: boolean;
+    isVerified?: boolean; // Keep for backward compatibility
     mfaEnabled: boolean;
     createdAt: string;
     updatedAt: string;
@@ -55,9 +59,8 @@ export interface MfaVerifyRequest {
 }
 
 export interface UpdateProfileData {
-    firstName?: string;
-    lastName?: string;
-    username?: string;
+    displayName?: string;
+    bio?: string;
 }
 
 export interface ChangePasswordData {
