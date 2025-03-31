@@ -63,6 +63,9 @@
   --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.1);
   --shadow-focus: 0 0 0 1px var(--color-focus);
+  
+  /* Media query breakpoints */
+  --breakpoint-mobile: 1024px;
 }
 
 /* Dark Mode */

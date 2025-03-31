@@ -55,7 +55,7 @@
 }
 
 .menuButton {
-  display: flex;
+  display: none; /* Hide by default - only show on mobile */
   align-items: center;
   justify-content: center;
   background: none;
@@ -241,6 +241,16 @@
   
   .logoText {
     font-size: var(--font-size-md);
+  }
+}
+
+@media (max-width: 1023px) {
+  .navbar {
+    padding: 0 var(--spacing-3);
+  }
+  
+  .menuButton {
+    display: flex; /* Only display on mobile */
   }
 }
 

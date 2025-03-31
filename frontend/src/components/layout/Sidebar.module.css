@@ -1,6 +1,6 @@
 .sidebar {
-  width: 48px; /* Default collapsed width like VS Code */
-  min-width: 48px;
+  width: 200px; /* Default expanded width on desktop */
+  min-width: 200px;
   background-color: var(--color-sidebar-background);
   border-right: 1px solid var(--color-border);
   height: 100%;
@@ -9,6 +9,11 @@
   transition: width var(--transition-normal);
   overflow: hidden;
   flex-shrink: 0;
+}
+
+.sidebar.collapsed {
+  width: 48px; /* Collapsed width like VS Code */
+  min-width: 48px;
 }
 
 .sidebar:not(.collapsed) {
@@ -179,12 +184,22 @@
     z-index: 999;
     transform: translateX(-100%);
     box-shadow: none;
-    width: 230px;
-    min-width: 230px;
+    width: 280px; /* Always expanded on mobile */
+    min-width: 280px;
   }
 
   .sidebar.open {
     transform: translateX(0);
     box-shadow: var(--shadow-lg);
+  }
+
+  /* Force sidebar title to be visible on mobile regardless of collapsed state */
+  .sidebar .sidebarTitle {
+    display: block;
+  }
+
+  /* Force navigation labels to be visible on mobile */
+  .sidebar .navLabel {
+    display: block;
   }
 }

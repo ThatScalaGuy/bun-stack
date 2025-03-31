@@ -15,7 +15,19 @@ export const Navbar = ({ toggleSidebar }: NavbarProps) => {
     const [theme, setTheme] = useState<'light' | 'dark'>(
         () => localStorage.getItem('theme') as 'light' | 'dark' || 'light'
     );
+    const [isMobile, setIsMobile] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
+
+    // Check if we're on mobile
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 1024);
+        };
+        
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
@@ -44,7 +56,7 @@ export const Navbar = ({ toggleSidebar }: NavbarProps) => {
         <header className={styles.navbar}>
             <div className={styles.navbarContent}>
                 <div className={styles.navbarStart}>
-                    {isAuthenticated && (
+                    {isAuthenticated && isMobile && (
                         <button
                             className={styles.menuButton}
                             onClick={toggleSidebar}

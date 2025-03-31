@@ -6,7 +6,7 @@ import { Sidebar } from './Sidebar';
 import { StatusBar } from './StatusBar';
 
 export const MainLayout = () => {
-    const [sidebarOpen, setSidebarOpen] = useState(true); // Default to open on desktop
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
 
     // Handle responsive behavior
@@ -14,8 +14,8 @@ export const MainLayout = () => {
         const handleResize = () => {
             const mobile = window.innerWidth < 1024;
             setIsMobile(mobile);
-            // Auto-close sidebar on mobile, keep open on desktop
-            if (mobile) setSidebarOpen(false);
+            // Auto-close sidebar on mobile, auto-open on desktop
+            setSidebarOpen(!mobile);
         };
 
         // Initial check
