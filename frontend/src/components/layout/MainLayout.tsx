@@ -32,7 +32,7 @@ export const MainLayout = () => {
     return (
         <div className={styles.layout}>
             <Navbar toggleSidebar={toggleSidebar} />
-            
+
             <div className={styles.container}>
                 <Sidebar
                     isOpen={sidebarOpen}
@@ -43,7 +43,7 @@ export const MainLayout = () => {
                     <Outlet />
                 </main>
             </div>
-            
+
             <StatusBar />
         </div>
     );

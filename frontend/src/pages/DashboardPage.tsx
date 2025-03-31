@@ -22,7 +22,7 @@ export const DashboardPage = () => {
                     </button>
                 </div>
             </header>
-            
+
             <div className={styles.content}>
                 <div className={styles.grid}>
                     <div className={styles.overview}>
