@@ -1,38 +1,67 @@
-import { Elysia, t } from "elysia";
-
-import { proxy } from "./proxy";
-import swagger from "@elysiajs/swagger";
-import serverTiming from "@elysiajs/server-timing";
-import cors from "@elysiajs/cors";
-import { sql } from "drizzle-orm";
+import { Elysia } from "elysia";
+import { cors } from "@elysiajs/cors";
+import { swagger } from "@elysiajs/swagger";
 import { database } from "./database";
-import { createInsertSchema, createSelectSchema, createUpdateSchema } from 'drizzle-typebox'
-import { tables } from "./database/schema";
+import { seedRoles } from "./utils/seedRoles";
+import { usersModule } from "./users";
+import { ApiError } from "./utils/error-handlers";
 
-const _createMovie = createInsertSchema(tables.movies)
-const _findMovie = createSelectSchema(tables.movies)
-const _updateMovie = createUpdateSchema(tables.movies)
-
-
-const app = new Elysia()
-  .use(serverTiming())
-  .use(swagger())
-  .use(cors())
+// Create the main application
+const app = new Elysia({
+  cookie: {
+    httpOnly: true,
+    secure: true,
+    secrets: ["SECRET_KEY"],
+    sameSite: "lax",
+    maxAge: 60 * 60 * 24 * 7 // 7 days
+  }
+})
   .use(database)
-  .get("/hi/:id", ({ params, db }) => {
-    const query = sql`select "hello world" as text`;
-    const result = db.get<{ text: string }>(query);
-    return "Hello Elysia 2" + result + params.id
-  }, {
-    params: t.Object({
-      id: t.String()
-    })
+  .use(cors({
+    origin: Bun.env.FRONTEND_URL || "http://localhost:5173",
+    credentials: true
+  }))
+  .use(swagger({
+    documentation: {
+      info: {
+        title: "User Management API",
+        version: "1.0.0"
+      }
+    }
+  }))
+  .use(usersModule)
+  .get("/", () => "User Management API is running")
+  .onError(({ code, error, set }) => {
+    // Handle custom API errors
+    if (error instanceof ApiError) {
+      set.status = error.status;
+      return {
+        success: false,
+        error: error.message,
+        code: error.code
+      };
+    }
+
+    if (code === "NOT_FOUND") {
+      set.status = 404;
+      return { success: false, error: "Not found" };
+    }
+
+    if (code === "VALIDATION") {
+      set.status = 400;
+      return { success: false, error: error.message };
+    }
+
+    console.error(`Error: [${code}]`, error);
+
+    set.status = 500;
+    return { success: false, error: "Internal server error" };
   })
-  .mount(proxy)
-  .listen(3000);
+  .listen(Bun.env.PORT || 3000);
+
+// Seed default roles
+seedRoles().catch(console.error);
 
 console.log(
-  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+  `🦊 Server is running at ${app.server?.hostname}:${app.server?.port}`
 );
-
-export type Backend = typeof app 

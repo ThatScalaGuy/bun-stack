@@ -1,13 +1,45 @@
 import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 
-export const movies = sqliteTable("movies", {
-    id: integer("id").primaryKey(),
-    title: text("name"),
-    releaseYear: integer("release_year"),
-});
+// Import user schema tables
+import {
+    users,
+    userProfiles,
+    userMfa,
+    roles,
+    userRoles,
+    sessions,
+    passwordResetTokens,
+    emailVerificationTokens,
+    auditLogs,
+    rateLimits
+} from "./schema/users";
+
 
 export const tables = {
-    movies
+    users,
+    userProfiles,
+    userMfa,
+    roles,
+    userRoles,
+    sessions,
+    passwordResetTokens,
+    emailVerificationTokens,
+    auditLogs,
+    rateLimits
 } as const
 
 export type Tables = typeof tables
+
+// Export all tables
+export {
+    users,
+    userProfiles,
+    userMfa,
+    roles,
+    userRoles,
+    sessions,
+    passwordResetTokens,
+    emailVerificationTokens,
+    auditLogs,
+    rateLimits
+};
