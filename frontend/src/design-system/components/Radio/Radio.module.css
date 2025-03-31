@@ -1,0 +1,107 @@
+.container {
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.input {
+  position: absolute;
+  opacity: 0;
+  height: 0;
+  width: 0;
+}
+
+.radio {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background-color: var(--color-background);
+  transition: all var(--transition-normal);
+}
+
+.dot {
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background-color: white;
+  transition: all var(--transition-normal);
+}
+
+/* Size variants */
+.small + .radio {
+  width: 14px;
+  height: 14px;
+}
+
+.small:checked + .radio .dot {
+  width: 6px;
+  height: 6px;
+}
+
+.medium + .radio {
+  width: 16px;
+  height: 16px;
+}
+
+.medium:checked + .radio .dot {
+  width: 8px;
+  height: 8px;
+}
+
+.large + .radio {
+  width: 18px;
+  height: 18px;
+}
+
+.large:checked + .radio .dot {
+  width: 10px;
+  height: 10px;
+}
+
+/* States */
+.input:checked + .radio {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.input:focus + .radio {
+  box-shadow: var(--shadow-focus);
+}
+
+.input:hover:not(:disabled) + .radio {
+  border-color: var(--color-primary);
+}
+
+.disabled .radio {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.disabled .label {
+  cursor: not-allowed;
+}
+
+.labelText {
+  margin-left: var(--spacing-2);
+  font-size: var(--font-size-md);
+  color: var(--color-text);
+}
+
+.hasError .radio {
+  border-color: var(--color-danger);
+}
+
+.errorText {
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+  margin-top: var(--spacing-1);
+}

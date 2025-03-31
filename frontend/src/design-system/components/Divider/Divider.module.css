@@ -1,0 +1,82 @@
+.divider {
+  position: relative;
+}
+
+.horizontal {
+  width: 100%;
+  height: 1px;
+}
+
+.vertical {
+  height: 100%;
+  width: 1px;
+  margin: 0 var(--spacing-2);
+}
+
+/* Variants */
+.solid.horizontal {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.solid.vertical {
+  border-right: 1px solid var(--color-border);
+}
+
+.dashed.horizontal {
+  border-bottom: 1px dashed var(--color-border);
+}
+
+.dashed.vertical {
+  border-right: 1px dashed var(--color-border);
+}
+
+.dotted.horizontal {
+  border-bottom: 1px dotted var(--color-border);
+}
+
+.dotted.vertical {
+  border-right: 1px dotted var(--color-border);
+}
+
+/* Spacing */
+.spacing-small.horizontal {
+  margin: var(--spacing-2) 0;
+}
+
+.spacing-medium.horizontal {
+  margin: var(--spacing-4) 0;
+}
+
+.spacing-large.horizontal {
+  margin: var(--spacing-6) 0;
+}
+
+/* Label */
+.withLabel {
+  display: flex;
+  align-items: center;
+  border-bottom: none;
+}
+
+.withLabel::before,
+.withLabel::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.withLabel.dashed::before,
+.withLabel.dashed::after {
+  border-bottom: 1px dashed var(--color-border);
+}
+
+.withLabel.dotted::before,
+.withLabel.dotted::after {
+  border-bottom: 1px dotted var(--color-border);
+}
+
+.label {
+  padding: 0 var(--spacing-3);
+  color: var(--color-text-light);
+  font-size: var(--font-size-sm);
+}

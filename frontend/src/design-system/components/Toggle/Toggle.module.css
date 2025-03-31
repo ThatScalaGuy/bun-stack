@@ -1,0 +1,114 @@
+.toggleContainer {
+  display: inline-flex;
+}
+
+.label {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.input {
+  position: absolute;
+  opacity: 0;
+  height: 0;
+  width: 0;
+}
+
+.toggle {
+  position: relative;
+  display: inline-block;
+  background-color: var(--color-background-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  transition: background-color var(--transition-normal);
+}
+
+.slider {
+  position: absolute;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform var(--transition-normal);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Size variants */
+.small .toggle {
+  width: 28px;
+  height: 16px;
+}
+
+.small .slider {
+  width: 12px;
+  height: 12px;
+  top: 1px;
+  left: 2px;
+}
+
+.small .input:checked + .toggle .slider {
+  transform: translateX(12px);
+}
+
+.medium .toggle {
+  width: 36px;
+  height: 20px;
+}
+
+.medium .slider {
+  width: 16px;
+  height: 16px;
+  top: 1px;
+  left: 2px;
+}
+
+.medium .input:checked + .toggle .slider {
+  transform: translateX(16px);
+}
+
+.large .toggle {
+  width: 44px;
+  height: 24px;
+}
+
+.large .slider {
+  width: 20px;
+  height: 20px;
+  top: 1px;
+  left: 2px;
+}
+
+.large .input:checked + .toggle .slider {
+  transform: translateX(20px);
+}
+
+/* States */
+.input:checked + .toggle {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.input:focus + .toggle {
+  box-shadow: var(--shadow-focus);
+}
+
+.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.disabled .label {
+  cursor: not-allowed;
+}
+
+.labelText {
+  margin-left: var(--spacing-2);
+  font-size: var(--font-size-md);
+  color: var(--color-text);
+}
+
+/* Interactive states */
+.input:hover:not(:disabled) + .toggle {
+  border-color: var(--color-primary);
+}

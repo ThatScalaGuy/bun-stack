@@ -1,0 +1,90 @@
+.tabsContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.tabList {
+  display: flex;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: var(--spacing-4);
+}
+
+.tab {
+  padding: var(--spacing-3) var(--spacing-4);
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--color-text-light);
+  position: relative;
+  transition: color var(--transition-fast);
+  font-size: var(--font-size-md);
+}
+
+.tab:hover:not(.disabledTab) {
+  color: var(--color-primary);
+}
+
+.activeTab {
+  color: var(--color-primary);
+}
+
+.disabledTab {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Default style */
+.default .activeTab::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--color-primary);
+}
+
+/* Pills style */
+.pills {
+  border-bottom: none;
+  gap: var(--spacing-2);
+}
+
+.pills .tab {
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-2) var(--spacing-4);
+}
+
+.pills .activeTab {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+/* Underlined style */
+.underlined {
+  gap: var(--spacing-4);
+}
+
+.underlined .tab {
+  padding: var(--spacing-2) var(--spacing-1);
+}
+
+.underlined .activeTab {
+  font-weight: 600;
+}
+
+.underlined .activeTab::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--color-primary);
+}
+
+.tabPanel {
+  padding: var(--spacing-1) var(--spacing-0);
+}

@@ -1,0 +1,112 @@
+.container {
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.input {
+  position: absolute;
+  opacity: 0;
+  height: 0;
+  width: 0;
+}
+
+.checkbox {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-sm);
+  background-color: var(--color-background);
+  transition: all var(--transition-normal);
+}
+
+.icon {
+  color: white;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all var(--transition-normal);
+}
+
+/* Size variants */
+.small + .checkbox {
+  width: 14px;
+  height: 14px;
+}
+
+.small + .checkbox .icon {
+  width: 12px;
+  height: 12px;
+}
+
+.medium + .checkbox {
+  width: 16px;
+  height: 16px;
+}
+
+.medium + .checkbox .icon {
+  width: 14px;
+  height: 14px;
+}
+
+.large + .checkbox {
+  width: 18px;
+  height: 18px;
+}
+
+.large + .checkbox .icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* States */
+.input:checked + .checkbox {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.input:checked + .checkbox .icon,
+.input:indeterminate + .checkbox .icon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.input:focus + .checkbox {
+  box-shadow: var(--shadow-focus);
+}
+
+.input:hover:not(:disabled) + .checkbox {
+  border-color: var(--color-primary);
+}
+
+.disabled .checkbox {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.disabled .label {
+  cursor: not-allowed;
+}
+
+.labelText {
+  margin-left: var(--spacing-2);
+  font-size: var(--font-size-md);
+  color: var(--color-text);
+}
+
+.hasError .checkbox {
+  border-color: var(--color-danger);
+}
+
+.errorText {
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+  margin-top: var(--spacing-1);
+}

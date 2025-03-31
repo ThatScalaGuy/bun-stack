@@ -1,0 +1,63 @@
+.formGroup {
+  margin-bottom: var(--spacing-4);
+}
+
+/* Layout directions */
+.vertical {
+  display: flex;
+  flex-direction: column;
+}
+
+.horizontal {
+  display: flex;
+  align-items: flex-start;
+}
+
+.horizontal .labelContainer {
+  width: 30%;
+  margin-right: var(--spacing-4);
+  margin-top: calc(var(--spacing-3) + 2px); /* Align with input text */
+}
+
+.horizontal .content {
+  flex: 1;
+}
+
+/* Label */
+.label {
+  display: inline-block;
+  margin-bottom: var(--spacing-2);
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.required {
+  color: var(--color-danger);
+  margin-left: var(--spacing-1);
+}
+
+/* Helper and error text */
+.helperText {
+  margin-top: var(--spacing-1);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-light);
+}
+
+.error {
+  margin-top: var(--spacing-1);
+  font-size: var(--font-size-sm);
+  color: var(--color-danger);
+}
+
+@media (max-width: 768px) {
+  .horizontal {
+    flex-direction: column;
+  }
+  
+  .horizontal .labelContainer {
+    width: 100%;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: var(--spacing-2);
+  }
+}

@@ -1,0 +1,125 @@
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  width: max-content;
+  font-family: var(--font-family);
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.label {
+  margin-bottom: var(--spacing-1);
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input {
+  width: 100%;
+  background-color: transparent;
+  color: var(--color-text);
+  font-family: inherit;
+  border-radius: var(--border-radius-md);
+  transition: all var(--transition-normal);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-focus);
+}
+
+.input::placeholder {
+  color: var(--color-text-disabled);
+}
+
+/* Size variants */
+.small .input {
+  padding: var(--spacing-1) var(--spacing-3);
+  font-size: var(--font-size-sm);
+  height: 30px;
+}
+
+.medium .input {
+  padding: var(--spacing-2) var(--spacing-4);
+  font-size: var(--font-size-md);
+  height: 36px;
+}
+
+.large .input {
+  padding: var(--spacing-3) var(--spacing-5);
+  font-size: var(--font-size-lg);
+  height: 44px;
+}
+
+/* Style variants */
+.outlined .input {
+  border: 1px solid var(--color-border);
+  background-color: transparent;
+}
+
+.outlined.error .input {
+  border-color: var(--color-danger);
+}
+
+.filled .input {
+  border: 1px solid transparent;
+  background-color: var(--color-background-alt);
+}
+
+.filled.error .input {
+  border-color: var(--color-danger);
+}
+
+.filled .input:focus {
+  background-color: var(--color-background);
+}
+
+/* Icons */
+.startIcon, .endIcon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+  pointer-events: none;
+}
+
+.startIcon {
+  left: var(--spacing-3);
+}
+
+.endIcon {
+  right: var(--spacing-3);
+}
+
+.inputWrapper .startIcon + .input {
+  padding-left: calc(var(--spacing-3) * 2 + 16px);
+}
+
+.inputWrapper .input + .endIcon ~ .input {
+  padding-right: calc(var(--spacing-3) * 2 + 16px);
+}
+
+/* Helper & Error text */
+.helperText, .errorText {
+  font-size: var(--font-size-xs);
+  margin-top: var(--spacing-1);
+}
+
+.helperText {
+  color: var(--color-text-secondary);
+}
+
+.errorText {
+  color: var(--color-danger);
+}
