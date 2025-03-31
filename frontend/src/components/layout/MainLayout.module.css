@@ -1,50 +1,49 @@
 .layout {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  height: 100%;
+  height: 100vh; /* Use full viewport height */
+  width: 100vw; /* Use full viewport width */
+  overflow: hidden;
 }
 
 .container {
   display: flex;
   flex: 1;
-  position: relative;
-  height: calc(100vh - 56px); /* Adjust based on navbar height */
   overflow: hidden;
+  min-height: 0; /* Allows container to shrink properly */
 }
 
 .content {
   flex: 1;
-  padding: var(--spacing-6);
   background-color: var(--color-background);
-  overflow-y: auto;
+  overflow: auto; /* Allow scrolling content */
   width: 100%;
-  transition: padding var(--transition-normal);
-}
-
-.contentWithSidebar {
-  padding-left: var(--spacing-8);
+  display: flex;
+  flex-direction: column;
 }
 
 /* Responsive adjustments */
 @media (max-width: 1280px) {
   .content {
-    padding: var(--spacing-5);
+    padding: var(--spacing-3);
   }
 }
 
 @media (max-width: 1024px) {
   .content {
-    padding: var(--spacing-4);
+    padding: var(--spacing-3);
   }
 }
 
 @media (max-width: 768px) {
-  .container {
-    height: calc(100vh - 48px); /* Smaller navbar on mobile */
-  }
-  
   .content {
-    padding: var(--spacing-3);
+    padding: var(--spacing-2);
+  }
+}
+
+/* Support for 5:4 displays */
+@media (min-aspect-ratio: 5/4) and (max-aspect-ratio: 16/9) {
+  .layout {
+    height: 100vh;
   }
 }
