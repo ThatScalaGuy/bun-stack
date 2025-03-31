@@ -1,4 +1,4 @@
-import { Elysia, t } from "elysia";
+import { Elysia, error, t } from "elysia";
 import {
     RegisterUserSchema,
     LoginUserSchema,
@@ -24,7 +24,7 @@ export const authController = new Elysia({ prefix: "/auth" })
      * POST /auth/register
      */
     .post("/register",
-        async ({ body, request, set }) => {
+        async ({ body, error, request, set }) => {
             // Get client IP address
             const ipAddress = request.headers.get("X-Forwarded-For") ||
                 request.headers.get("CF-Connecting-IP") ||
@@ -33,12 +33,10 @@ export const authController = new Elysia({ prefix: "/auth" })
             const result = await AuthService.register(body, ipAddress);
 
             if (!result.success) {
-                set.status = 400;
-                return { success: false, error: result.error };
+                return error(400, result.error);
             }
 
             return {
-                success: true,
                 message: "Registration successful! Please check your email to verify your account.",
                 user: result.user
             };
@@ -51,16 +49,14 @@ export const authController = new Elysia({ prefix: "/auth" })
      * POST /auth/verify-email
      */
     .post("/verify-email",
-        async ({ body, set }) => {
+        async ({ body, error }) => {
             const result = await AuthService.verifyEmail(body.token);
 
             if (!result.success) {
-                set.status = 400;
-                return { success: false, error: result.error };
+                return error(400, result.error);
             }
 
             return {
-                success: true,
                 message: "Email verified successfully. You can now log in."
             };
         },
@@ -72,7 +68,7 @@ export const authController = new Elysia({ prefix: "/auth" })
      * POST /auth/login
      */
     .post("/login",
-        async ({ body, request, set, cookie }) => {
+        async ({ body, request, error, cookie }) => {
             // Get client info
             const ipAddress = request.headers.get("X-Forwarded-For") ||
                 request.headers.get("CF-Connecting-IP") ||
@@ -82,14 +78,12 @@ export const authController = new Elysia({ prefix: "/auth" })
             const result = await AuthService.login(body, ipAddress, userAgent);
 
             if (!result.success) {
-                set.status = 400;
-                return { success: false, error: result.error };
+                return error(400, result.error);
             }
 
             // If MFA is required, return step-up token
             if (result.stepUpToken) {
                 return {
-                    success: true,
                     requireMfa: true,
                     stepUpToken: result.stepUpToken
                 };
@@ -99,7 +93,6 @@ export const authController = new Elysia({ prefix: "/auth" })
             cookie.refresh_token.value = result.refreshToken as string;
 
             return {
-                success: true,
                 accessToken: result.accessToken,
                 user: result.user
             };

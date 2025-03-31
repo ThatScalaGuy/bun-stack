@@ -20,17 +20,15 @@ export const userController = new Elysia({ prefix: "/users" })
      * GET /users/me
      */
     .get("/me",
-        async ({ set, requireAuthentication }) => {
+        async ({ requireAuthentication, error }) => {
             const [user, roles] = requireAuthentication()
 
             const profile = await UserRepository.getProfileWithUserData(user.id);
 
             if (!profile) {
-                set.status = 404;
-                return { success: false, error: "User not found" };
+                return error(404, "User not found");
             }
             return {
-                success: true,
                 profile: {
                     ...profile,
                     roles
@@ -44,23 +42,20 @@ export const userController = new Elysia({ prefix: "/users" })
      * PUT /users/me
      */
     .put("/me",
-        async ({ body, userId, set }) => {
+        async ({ body, userId, error }) => {
             if (!userId) {
-                set.status = 401;
-                return { success: false, error: "Authentication required" };
+                return error(401, "Authentication required");
             }
 
             const updated = await UserRepository.updateProfile(userId, body);
 
             if (!updated) {
-                set.status = 400;
-                return { success: false, error: "Failed to update profile" };
+                return error(400, "Failed to update profile");
             }
 
             const profile = await UserRepository.getProfileWithUserData(userId);
 
             return {
-                success: true,
                 message: "Profile updated successfully",
                 profile
             };
@@ -76,21 +71,18 @@ export const userController = new Elysia({ prefix: "/users" })
      * PUT /users/me/password
      */
     .put("/me/password",
-        async ({ body, userId, set }) => {
+        async ({ body, userId, error }) => {
             if (!userId) {
-                set.status = 401;
-                return { success: false, error: "Authentication required" };
+                return error(401, "Authentication required");
             }
 
             const result = await AuthService.changePassword(userId, body);
 
             if (!result.success) {
-                set.status = 400;
-                return { success: false, error: result.error };
+                return error(400, result.error);
             }
 
             return {
-                success: true,
                 message: result.message
             };
         },
@@ -104,21 +96,18 @@ export const userController = new Elysia({ prefix: "/users" })
      * POST /users/me/mfa/setup
      */
     .post("/me/mfa/setup",
-        async ({ body, userId, set }) => {
+        async ({ body, userId, error }) => {
             if (!userId) {
-                set.status = 401;
-                return { success: false, error: "Authentication required" };
+                return error(401, "Authentication required");
             }
 
             const result = await AuthService.setupMfa(userId, body);
 
             if (!result.success) {
-                set.status = 400;
-                return { success: false, error: result.error };
+                return error(400, result.error);
             }
 
             return {
-                success: true,
                 mfaId: result.mfaId,
                 secret: result.secret,
                 qrCodeUrl: result.qrCodeUrl
@@ -162,21 +151,18 @@ export const userController = new Elysia({ prefix: "/users" })
      * DELETE /users/me/mfa
      */
     .delete("/me/mfa",
-        async ({ userId, set }) => {
+        async ({ userId, error }) => {
             if (!userId) {
-                set.status = 401;
-                return { success: false, error: "Authentication required" };
+                return error(401, "Authentication required");
             }
 
             const result = await AuthService.removeMfa(userId);
 
             if (!result.success) {
-                set.status = 400;
-                return { success: false, error: result.error };
+                return error(400, result.error);
             }
 
             return {
-                success: true,
                 message: result.message
             };
         },

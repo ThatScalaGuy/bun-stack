@@ -36,21 +36,19 @@ export const roleController = new Elysia({ prefix: "/roles" })
      * Get role permissions
      * GET /api/roles/:name/permissions
      */
-    .get("/:name/permissions", async ({ params, set, requirePermission }) => {
+    .get("/:name/permissions", async ({ params, error, requirePermission }) => {
         // Only users with permission to view roles can access
         requirePermission(PERMISSIONS.USER_VIEW);
 
         const role = await RoleRepository.findRoleByName(params.name);
 
         if (!role) {
-            set.status = 404;
-            return { success: false, error: "Role not found" };
+            return error(404, "Role not found");
         }
 
         const permissions = getPermissionsForRole(role.name);
 
         return {
-            success: true,
             role: role.name,
             permissions
         };
@@ -64,14 +62,14 @@ export const roleController = new Elysia({ prefix: "/roles" })
      * Create new role
      * POST /api/roles
      */
-    .post("/", async ({ body, requirePermission }) => {
+    .post("/", async ({ body, error, requirePermission }) => {
         // Only admins can create roles
         requirePermission(PERMISSIONS.ADMIN_MANAGE_ROLES);
 
         const existingRole = await RoleRepository.findRoleByName(body.name);
 
         if (existingRole) {
-            return { success: false, error: "Role with this name already exists" };
+            return error(400, "Role with this name already exists");
         }
 
         const newRole = await RoleRepository.createRole(body.name, body.description);
@@ -83,7 +81,6 @@ export const roleController = new Elysia({ prefix: "/roles" })
         );
 
         return {
-            success: true,
             role: newRole
         };
     }, {
@@ -97,7 +94,7 @@ export const roleController = new Elysia({ prefix: "/roles" })
      * Update a role
      * PUT /api/roles/:id
      */
-    .put("/:id", async ({ params, body, set, requirePermission }) => {
+    .put("/:id", async ({ params, body, error, requirePermission }) => {
         // Only admins can update roles
         requirePermission(PERMISSIONS.ADMIN_MANAGE_ROLES);
 
@@ -105,8 +102,7 @@ export const roleController = new Elysia({ prefix: "/roles" })
         if (body.name) {
             const existingRole = await RoleRepository.findRoleByName(body.name);
             if (existingRole && existingRole.id !== params.id) {
-                set.status = 400;
-                return { success: false, error: "Role with this name already exists" };
+                return error(400, "Role with this name already exists");
             }
         }
 
@@ -117,8 +113,7 @@ export const roleController = new Elysia({ prefix: "/roles" })
         );
 
         if (!updatedRole) {
-            set.status = 404;
-            return { success: false, error: "Role not found" };
+            return error(404, "Role not found");
         }
 
         // Log audit event
@@ -128,7 +123,6 @@ export const roleController = new Elysia({ prefix: "/roles" })
         );
 
         return {
-            success: true,
             role: updatedRole
         };
     }, {
@@ -145,7 +139,7 @@ export const roleController = new Elysia({ prefix: "/roles" })
      * Delete a role
      * DELETE /api/roles/:id
      */
-    .delete("/:id", async ({ params, set, requirePermission }) => {
+    .delete("/:id", async ({ params, error, requirePermission }) => {
         // Only admins can delete roles
         requirePermission(PERMISSIONS.ADMIN_MANAGE_ROLES);
 
@@ -158,8 +152,7 @@ export const roleController = new Elysia({ prefix: "/roles" })
         const deleted = await RoleRepository.deleteRole(params.id);
 
         if (!deleted) {
-            set.status = 404;
-            return { success: false, error: "Role not found or could not be deleted" };
+            return error(404, "Role not found or could not be deleted");
         }
 
         // Log audit event
@@ -169,7 +162,6 @@ export const roleController = new Elysia({ prefix: "/roles" })
         );
 
         return {
-            success: true,
             message: "Role deleted successfully"
         };
     }, {

@@ -14,7 +14,6 @@ const BackendContext = createContext<ReturnType<typeof createBackendClient> | nu
 // Provider component
 export const BackendProvider = ({ children }: { children: ReactNode }) => {
     const client = createBackendClient();
-
     return (
         <BackendContext.Provider value={client}>
             {children}
