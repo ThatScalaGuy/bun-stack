@@ -65,3 +65,5 @@ seedRoles().catch(console.error);
 console.log(
   `🦊 Server is running at ${app.server?.hostname}:${app.server?.port}`
 );
+
+export type Backend = typeof app;
