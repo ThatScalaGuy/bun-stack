@@ -28,7 +28,7 @@ const adminRoutes = (children: RouteObject[]): RouteObject[] => {
         ...route,
         element: <AuthGuard requiredRole="admin">{route.element}</AuthGuard>,
         children: route.children ? adminRoutes(route.children) : undefined,
-    } as RouteObject));
+    }));
 };
 
 const routes: RouteObject[] = [

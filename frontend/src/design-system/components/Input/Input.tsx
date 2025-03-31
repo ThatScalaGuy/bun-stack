@@ -24,43 +24,54 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         size = 'medium',
         className = '',
         id,
+        required,
+        type = 'text',
         ...props
     }, ref) => {
         const inputId = id || `input-${Math.random().toString(36).substring(2, 9)}`;
 
-        const classes = `
-      ${styles.inputContainer}
+        const containerClasses = `
+      ${styles.container}
+      ${fullWidth ? styles.fullWidth : ''}
+      ${error ? styles.hasError : ''}
       ${styles[variant]}
       ${styles[size]}
-      ${fullWidth ? styles.fullWidth : ''}
-      ${error ? styles.error : ''}
       ${className}
     `.trim();
 
         return (
-            <div className={classes}>
+            <div className={containerClasses}>
                 {label && (
                     <label htmlFor={inputId} className={styles.label}>
                         {label}
+                        {required && <span className={styles.required}>*</span>}
                     </label>
                 )}
 
                 <div className={styles.inputWrapper}>
-                    {startIcon && <div className={styles.startIcon}>{startIcon}</div>}
+                    {startIcon && <span className={styles.startIcon}>{startIcon}</span>}
 
                     <input
                         ref={ref}
                         id={inputId}
+                        type={type}
                         className={styles.input}
                         aria-invalid={!!error}
+                        aria-describedby={
+                            error || helperText ? `${inputId}-helper` : undefined
+                        }
+                        required={required}
                         {...props}
                     />
 
-                    {endIcon && <div className={styles.endIcon}>{endIcon}</div>}
+                    {endIcon && <span className={styles.endIcon}>{endIcon}</span>}
                 </div>
 
                 {(error || helperText) && (
-                    <div className={error ? styles.errorText : styles.helperText}>
+                    <div
+                        id={`${inputId}-helper`}
+                        className={error ? styles.errorText : styles.helperText}
+                    >
                         {error || helperText}
                     </div>
                 )}
