@@ -1,0 +1,181 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-6);
+}
+
+.header {
+  margin-bottom: var(--spacing-8);
+}
+
+.header h1 {
+  font-size: var(--font-size-3xl);
+  color: var(--color-text);
+  margin-bottom: var(--spacing-2);
+}
+
+.header p {
+  color: var(--color-text-light);
+  font-size: var(--font-size-lg);
+}
+
+.cardsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-6);
+  margin-bottom: var(--spacing-10);
+}
+
+.card {
+  background-color: var(--color-background-alt);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-6);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+.cardIcon {
+  font-size: 2rem;
+  margin-bottom: var(--spacing-4);
+  color: var(--color-primary);
+}
+
+.card h2 {
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--spacing-3);
+  color: var(--color-text);
+}
+
+.card p {
+  color: var(--color-text-light);
+  margin-bottom: var(--spacing-4);
+  flex-grow: 1;
+}
+
+.cardLink {
+  display: inline-block;
+  padding: var(--spacing-3) var(--spacing-4);
+  background-color: var(--color-primary);
+  color: white;
+  border-radius: var(--border-radius-md);
+  text-decoration: none;
+  text-align: center;
+  font-weight: 500;
+  transition: background-color var(--transition-fast);
+}
+
+.cardLink:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.adminCard {
+  border-left: 4px solid var(--color-primary);
+}
+
+.accountStatus {
+  background-color: var(--color-background-alt);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-6);
+}
+
+.accountStatus h3 {
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--spacing-4);
+  color: var(--color-text);
+}
+
+.statusItems {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.statusItem {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-3);
+  background-color: var(--color-background);
+  border-radius: var(--border-radius-md);
+}
+
+.statusLabel {
+  font-weight: 500;
+  min-width: 150px;
+  color: var(--color-text-light);
+}
+
+.verifiedBadge {
+  margin-left: auto;
+  background-color: var(--color-success);
+  color: white;
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+}
+
+.verifyLink {
+  margin-left: auto;
+  color: var(--color-primary);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.verifyLink:hover {
+  text-decoration: underline;
+}
+
+.enabledBadge {
+  margin-left: auto;
+  background-color: var(--color-success);
+  color: white;
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+}
+
+.disabledBadge {
+  margin-left: auto;
+  background-color: var(--color-secondary);
+  color: white;
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: var(--spacing-4);
+  }
+  
+  .cardsContainer {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-4);
+  }
+  
+  .statusItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-2);
+  }
+  
+  .statusLabel {
+    min-width: auto;
+  }
+  
+  .verifiedBadge,
+  .verifyLink,
+  .enabledBadge,
+  .disabledBadge {
+    margin-left: 0;
+  }
+}

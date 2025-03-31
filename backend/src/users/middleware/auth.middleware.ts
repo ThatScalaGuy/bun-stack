@@ -18,16 +18,7 @@ export const authMiddleware = new Elysia({ name: "auth" })
             throw new UnauthorizedError("Authentication required");
         }
 
-        if (!authHeader) {
-            return {
-                user: null,
-                userId: null,
-                userRoles: [] as string[],
-                requireAuthentication
-            };
-        }
-
-        const token = TokenService.extractTokenFromHeader(authHeader);
+        const token = authHeader && TokenService.extractTokenFromHeader(authHeader);
 
         // If no token, check for cookie
         const cookieToken = !token ? cookie.access_token?.value : null;

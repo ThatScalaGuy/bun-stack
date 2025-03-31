@@ -5,12 +5,14 @@ import { database } from "./database";
 import { seedRoles } from "./utils/seedRoles";
 import { usersModule } from "./users";
 import { ApiError } from "./utils/error-handlers";
+import { proxy } from "./proxy";
 
 // Create the main application
 const app = new Elysia({
   cookie: {
-    httpOnly: true,
-    secure: true,
+    domain: Bun.env.DOMAIN || "localhost",
+    //httpOnly: true,
+    //secure: true,
     secrets: ["SECRET_KEY"],
     sameSite: "lax",
     maxAge: 60 * 60 * 24 * 7 // 7 days
@@ -29,8 +31,8 @@ const app = new Elysia({
       }
     }
   }))
+  .use(proxy)
   .use(usersModule)
-  .get("/", () => "User Management API is running")
   .onError(({ code, error, set }) => {
     // Handle custom API errors
     if (error instanceof ApiError) {
@@ -67,3 +69,4 @@ console.log(
 );
 
 export type Backend = typeof app;
+

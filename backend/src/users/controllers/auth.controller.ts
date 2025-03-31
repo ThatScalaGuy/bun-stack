@@ -95,6 +95,7 @@ export const authController = new Elysia({ prefix: "/auth" })
                 };
             }
 
+            cookie.access_token.value = result.accessToken as string;
             cookie.refresh_token.value = result.refreshToken as string;
 
             return {
@@ -219,11 +220,14 @@ export const authController = new Elysia({ prefix: "/auth" })
 
             if (!result.success) {
                 // Clear the invalid refresh token
+                cookie.access_token.remove()
                 cookie.refresh_token.remove()
 
                 set.status = 401;
                 return { success: false, error: result.error };
             }
+
+            cookie.access_token.value = result.accessToken as string;
 
             return {
                 success: true,
@@ -253,6 +257,7 @@ export const authController = new Elysia({ prefix: "/auth" })
             const result = await AuthService.logout(refreshToken, userId);
 
             // Always clear the cookie, even if the token wasn't valid
+            cookie.access_token.remove()
             cookie.refresh_token.remove()
 
             if (!result.success) {
