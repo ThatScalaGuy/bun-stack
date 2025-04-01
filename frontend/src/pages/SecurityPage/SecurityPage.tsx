@@ -4,7 +4,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useProfileQueries, useMfaQueries } from '../../hooks/queries';
 import styles from './SecurityPage.module.css';
 import { Button } from '../../design-system';
-import { PageHeader } from '../../design-system/components';
+import { Alert, PageHeader } from '../../design-system/components';
 
 type ChangePasswordFormData = {
     currentPassword: string;
@@ -20,7 +20,8 @@ export const SecurityPage = () => {
     const { user } = useAuth();
     const { changePassword } = useProfileQueries();
     const { setupMfa, verifyMfa, disableMfa: removeMfa } = useMfaQueries();
-
+    const [error, setError] = useState<Error | null>(null);
+    const [success, setSuccess] = useState<string | null>(null);
     const [mfaSetupData, setMfaSetupData] = useState<{
         secret: string;
         qrCodeUrl: string;
@@ -57,7 +58,13 @@ export const SecurityPage = () => {
             {
                 onSuccess: () => {
                     resetPasswordForm();
+                    setSuccess("Password changed successfully");
+                    setError(null);
                     // Show success notification
+                },
+                onError: (error) => {
+                    // Show error notification
+                    setError(error);
                 },
             }
         );
@@ -121,6 +128,8 @@ export const SecurityPage = () => {
                         </p>
 
                         <form onSubmit={handlePasswordSubmit(onChangePasswordSubmit)} className={styles.form}>
+                            {error && <Alert variant='danger'>{error.message}</Alert>}
+                            {success && <Alert variant='success'>{success}</Alert>}
                             <div className={styles.formGroup}>
                                 <label htmlFor="currentPassword">Current Password</label>
                                 <input

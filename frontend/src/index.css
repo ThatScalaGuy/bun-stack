@@ -104,15 +104,15 @@ button:focus-visible {
   display: none;
 }
 
-@media (prefers-color-scheme: light) {
+/* @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
     background-color: #ffffff;
   }
   a:hover {
-    color: #747bff;
+    color: var(--color-primary-hover);
   }
   button {
     background-color: #f9f9f9;
   }
-}
+} */

@@ -12,8 +12,8 @@
 }
 
 .sidebar.collapsed {
-  width: 48px; /* Collapsed width like VS Code */
-  min-width: 48px;
+  width: 32px; /* Collapsed width like VS Code */
+  min-width: 32px;
 }
 
 .sidebar:not(.collapsed) {
@@ -95,6 +95,11 @@
 
 .navItem:hover {
   background-color: var(--color-sidebar-hover);
+}
+
+.activeNavItem:hover {
+  color: var(--color-sidebar-background);
+  text-decoration: underline;
 }
 
 .activeNavItem {

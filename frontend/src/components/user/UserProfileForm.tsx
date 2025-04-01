@@ -5,6 +5,7 @@ import { UpdateProfileData } from '../../types/user';
 import { useProfileQueries } from '../../hooks/queries';
 import { FormGroup } from '../../design-system/components/FormGroup';
 import styles from './UserProfileForm.module.css';
+import { Alert } from '../../design-system';
 
 export const UserProfileForm = () => {
     const { user } = useAuth();
@@ -37,6 +38,15 @@ export const UserProfileForm = () => {
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+                {updateProfile.isSuccess && (
+                    <Alert variant='success'>Profile updated successfully!</Alert>
+                )}
+
+                {updateProfile.error && (
+                    <Alert variant='danger'>
+                        {(updateProfile.error)?.message || 'An error occurred while updating your profile.'}
+                    </Alert>
+                )}
                 <FormGroup
                     label="Display Name"
                     error={errors.displayName?.message}
@@ -95,17 +105,7 @@ export const UserProfileForm = () => {
                 </div>
             </form>
 
-            {updateProfile.isSuccess && (
-                <div className={styles.successMessage}>
-                    Profile updated successfully!
-                </div>
-            )}
 
-            {updateProfile.error && (
-                <div className={styles.errorMessage}>
-                    {(updateProfile.error as any)?.message || 'An error occurred while updating your profile.'}
-                </div>
-            )}
         </div>
     );
 }

@@ -43,7 +43,7 @@ export const roleController = new Elysia({ prefix: "/roles" })
         const role = await RoleRepository.findRoleByName(params.name);
 
         if (!role) {
-            return error(404, "Role not found");
+            return error(404, { message: "Role not found" });
         }
 
         const permissions = getPermissionsForRole(role.name);
@@ -66,10 +66,11 @@ export const roleController = new Elysia({ prefix: "/roles" })
         // Only admins can create roles
         requirePermission(PERMISSIONS.ADMIN_MANAGE_ROLES);
 
+        // Check if role already exists
         const existingRole = await RoleRepository.findRoleByName(body.name);
 
         if (existingRole) {
-            return error(400, "Role with this name already exists");
+            return error(400, { message: "Role with this name already exists" });
         }
 
         const newRole = await RoleRepository.createRole(body.name, body.description);
@@ -85,7 +86,7 @@ export const roleController = new Elysia({ prefix: "/roles" })
         };
     }, {
         body: t.Object({
-            name: t.String(),
+            name: t.String({ minLength: 1 }),
             description: t.Optional(t.String())
         })
     })
@@ -98,14 +99,15 @@ export const roleController = new Elysia({ prefix: "/roles" })
         // Only admins can update roles
         requirePermission(PERMISSIONS.ADMIN_MANAGE_ROLES);
 
-        // Check if new name is already taken by another role
+        // Check if the new name is already taken by another role
         if (body.name) {
             const existingRole = await RoleRepository.findRoleByName(body.name);
             if (existingRole && existingRole.id !== params.id) {
-                return error(400, "Role with this name already exists");
+                return error(400, { message: "Role with this name already exists" });
             }
         }
 
+        // Update the role
         const updatedRole = await RoleRepository.updateRole(
             params.id,
             body.name,
@@ -113,7 +115,7 @@ export const roleController = new Elysia({ prefix: "/roles" })
         );
 
         if (!updatedRole) {
-            return error(404, "Role not found");
+            return error(404, { message: "Role not found" });
         }
 
         // Log audit event
@@ -152,7 +154,7 @@ export const roleController = new Elysia({ prefix: "/roles" })
         const deleted = await RoleRepository.deleteRole(params.id);
 
         if (!deleted) {
-            return error(404, "Role not found or could not be deleted");
+            return error(404, { message: "Role not found or could not be deleted" });
         }
 
         // Log audit event

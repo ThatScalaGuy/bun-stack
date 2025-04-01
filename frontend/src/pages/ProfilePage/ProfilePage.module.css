@@ -4,10 +4,7 @@
   padding: var(--spacing-6);
 }
 
-.pageTitle {
-  margin-bottom: var(--spacing-6);
-  color: var(--color-text);
-}
+
 
 .content {
   background-color: var(--color-background);
@@ -16,23 +13,6 @@
   overflow: hidden;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--spacing-6);
-}
-
-.title {
-  font-size: var(--font-size-3xl);
-  margin-bottom: var(--spacing-1);
-  color: var(--color-text);
-}
-
-.subtitle {
-  color: var(--color-text-light);
-  font-size: var(--font-size-md);
-}
 
 .card {
   background-color: var(--color-background);

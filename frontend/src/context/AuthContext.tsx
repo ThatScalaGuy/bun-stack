@@ -1,5 +1,4 @@
 import { createContext, ReactNode, useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router';
 import { useAuth } from '../hooks/useAuth';
 
 interface AuthContextType {

@@ -11,7 +11,7 @@ import { proxy } from "./proxy";
 const app = new Elysia({
   cookie: {
     domain: Bun.env.DOMAIN || "localhost",
-    //httpOnly: true,
+    httpOnly: true,
     //secure: true,
     secrets: ["SECRET_KEY"],
     sameSite: "lax",
@@ -20,13 +20,13 @@ const app = new Elysia({
 })
   .use(database)
   .use(cors({
-    origin: Bun.env.FRONTEND_URL || "http://localhost:5173",
+    origin: Bun.env.FRONTEND_URL || "http://localhost:3000",
     credentials: true
   }))
   .use(swagger({
     documentation: {
       info: {
-        title: "User Management API",
+        title: "Service",
         version: "1.0.0"
       }
     }
@@ -34,6 +34,7 @@ const app = new Elysia({
   .use(proxy)
   .use(usersModule)
   .onError(({ code, error, set }) => {
+
     // Handle custom API errors
     if (error instanceof ApiError) {
       set.status = error.status;

@@ -17,8 +17,16 @@ export function useProfileQueries() {
 
     // Change password
     const changePassword = useMutation({
-        mutationFn: (data: { currentPassword: string; newPassword: string }) =>
-            backend.api.users.me.password.put(data).then(res => res.data),
+        mutationFn: async (data: { currentPassword: string; newPassword: string }) => {
+            const result = await backend.api.users['change-password'].post(data)
+            if (result.status === 422) {
+                throw new Error('Invalid password');
+            }
+            if (result.status !== 200) {
+                throw new Error(result.error?.value.message || 'Failed to change password');
+            }
+            return result.data!;
+        },
     });
 
     return {

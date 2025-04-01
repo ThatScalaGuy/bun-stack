@@ -35,7 +35,7 @@ export const authController = new Elysia({ prefix: "/auth" })
             const result = await AuthService.register(mail)(body, ipAddress);
 
             if (!result.success) {
-                return error(400, result.error);
+                return error(400, { message: result.error });
             }
 
             return {
@@ -55,7 +55,7 @@ export const authController = new Elysia({ prefix: "/auth" })
             const result = await AuthService.verifyEmail(body.token);
 
             if (!result.success) {
-                return error(400, result.error);
+                return error(400, { message: result.error });
             }
 
             return {
@@ -80,7 +80,7 @@ export const authController = new Elysia({ prefix: "/auth" })
             const result = await AuthService.login(body, ipAddress, userAgent);
 
             if (!result.success) {
-                return error(400, result.error);
+                return error(400, { message: result.error });
             }
 
             // If MFA is required, return step-up token
@@ -151,8 +151,8 @@ export const authController = new Elysia({ prefix: "/auth" })
      * POST /auth/request-password-reset
      */
     .post("/request-password-reset",
-        async ({ body, request, set, mail }) => {
-            // Get client IP address
+        async ({ body, request, mail, transporter }) => {
+
             const ipAddress = request.headers.get("X-Forwarded-For") ||
                 request.headers.get("CF-Connecting-IP") ||
                 "unknown";
@@ -160,7 +160,7 @@ export const authController = new Elysia({ prefix: "/auth" })
             const result = await AuthService.requestPasswordReset(mail)(body.email, ipAddress);
 
             if (!result.success) {
-                return error(400, { error: result.error });
+                return error(400, { message: result.error });
             }
 
             return {

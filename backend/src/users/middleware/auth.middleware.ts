@@ -2,7 +2,8 @@ import { Elysia } from "elysia";
 import { TokenService } from "../services/token.service";
 import { UserRepository } from "../repositories/user.repository";
 import { AuthRepository } from "../repositories/auth.repository";
-import { UnauthorizedError, ForbiddenError } from "../../utils/error-handlers";
+import { UnauthorizedError } from "../../utils/error-handlers";
+import { UserJwtPayload } from "../types";
 
 /**
  * Authentication middleware for securing API routes
@@ -35,7 +36,6 @@ export const authMiddleware = new Elysia({ name: "auth" })
         // Verify the token
         const finalToken = token || cookieToken || "";
         const payload = await TokenService.verifyToken(finalToken);
-
         if (!payload) {
             return {
                 user: null,

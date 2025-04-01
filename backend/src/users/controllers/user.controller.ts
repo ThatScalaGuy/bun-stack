@@ -26,7 +26,7 @@ export const userController = new Elysia({ prefix: "/users" })
             const profile = await UserRepository.getProfileWithUserData(user.id);
 
             if (!profile) {
-                return error(404, "User not found");
+                return error(404, { message: "User not found" });
             }
             return {
                 profile: {
@@ -42,53 +42,48 @@ export const userController = new Elysia({ prefix: "/users" })
      * PUT /users/me
      */
     .put("/me",
-        async ({ body, userId, error }) => {
+        async ({ body, error, userId }) => {
             if (!userId) {
-                return error(401, "Authentication required");
+                return error(401, { message: "Authentication required" });
             }
 
+            // Update user profile
             const updated = await UserRepository.updateProfile(userId, body);
 
             if (!updated) {
-                return error(400, "Failed to update profile");
+                return error(400, { message: "Failed to update profile" });
             }
 
-            const profile = await UserRepository.getProfileWithUserData(userId);
-
             return {
-                message: "Profile updated successfully",
-                profile
+                success: true,
+                message: "Profile updated successfully"
             };
         },
-        {
-            body: UpdateProfileSchema
-
-        }
+        { body: UpdateProfileSchema }
     )
 
     /**
-     * Change password
-     * PUT /users/me/password
+     * Change user password
+     * POST /users/change-password
      */
-    .put("/me/password",
-        async ({ body, userId, error }) => {
+    .post("/change-password",
+        async ({ body, error, userId }) => {
             if (!userId) {
-                return error(401, "Authentication required");
+                return error(401, { message: "Authentication required" });
             }
 
             const result = await AuthService.changePassword(userId, body);
 
             if (!result.success) {
-                return error(400, result.error);
+                return error(400, { message: result.error });
             }
 
             return {
-                message: result.message
+                success: true,
+                message: "Password changed successfully"
             };
         },
-        {
-            body: ChangePasswordSchema,
-        }
+        { body: ChangePasswordSchema }
     )
 
     /**

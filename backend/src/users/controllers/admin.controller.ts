@@ -92,7 +92,7 @@ export const adminController = new Elysia({ prefix: "/admin" })
         const user = await UserRepository.findById(params.userId);
 
         if (!user) {
-            return error(404, "User not found");
+            return error(404, { message: "User not found" });
         }
 
         const updated = await UserRepository.setActiveStatus(params.userId, body.isActive);
@@ -116,51 +116,48 @@ export const adminController = new Elysia({ prefix: "/admin" })
             userId: t.String()
         }),
         body: t.Object({
-            isActive: t.Boolean()
+            isActive: t.Boolean(),
+            comment: t.Optional(t.String())
         })
     })
 
     /**
      * Assign a role to a user
-     * POST /admin/users/:userId/roles
+     * PUT /admin/users/:userId/roles/:roleId
      */
-    .post("/users/:userId/roles", async ({ params, body, error, requirePermission }) => {
+    .put("/users/:userId/roles/:roleId", async ({ params, error, requirePermission }) => {
         // Require admin permissions to manage roles
         requirePermission(PERMISSIONS.ADMIN_MANAGE_ROLES);
 
         const user = await UserRepository.findById(params.userId);
 
         if (!user) {
-            return error(404, "User not found");
+            return error(404, { message: "User not found" });
         }
 
-        // Find role by name or ID
-        let role;
-        if (body.roleId) {
-            const rolesList = await db.select()
-                .from(roles)
-                .where(eq(roles.id, body.roleId))
-                .limit(1);
-            role = rolesList[0];
-        } else if (body.roleName) {
-            role = await RoleRepository.findRoleByName(body.roleName);
-        }
+        // Check if role exists
+        const roleResult = await db.select()
+            .from(roles)
+            .where(eq(roles.id, params.roleId))
+            .limit(1);
+
+        const role = roleResult[0];
 
         if (!role) {
-            return error(404, "Role not found");
+            return error(404, { message: "Role not found" });
         }
 
         // Assign role to user
-        const assigned = await RoleRepository.assignRoleToUser(params.userId, role.id);
+        const assigned = await RoleRepository.assignRoleToUser(params.userId, params.roleId);
 
         if (!assigned) {
-            return error(400, "Failed to assign role or role already assigned");
+            return error(400, { message: "Failed to assign role or role already assigned" });
         }
 
         // Log audit event
         await AuthRepository.logAuditEvent(
             "admin.assign_role",
-            { userId: params.userId, roleId: role.id, roleName: role.name }
+            { userId: params.userId, roleId: params.roleId, roleName: role.name }
         );
 
         return {
@@ -169,11 +166,8 @@ export const adminController = new Elysia({ prefix: "/admin" })
         };
     }, {
         params: t.Object({
-            userId: t.String()
-        }),
-        body: t.Object({
-            roleId: t.Optional(t.String()),
-            roleName: t.Optional(t.String())
+            userId: t.String(),
+            roleId: t.String()
         })
     })
 
@@ -188,7 +182,7 @@ export const adminController = new Elysia({ prefix: "/admin" })
         const user = await UserRepository.findById(params.userId);
 
         if (!user) {
-            return error(404, "User not found");
+            return error(404, { message: "User not found" });
         }
 
         // Check if role exists
@@ -200,14 +194,14 @@ export const adminController = new Elysia({ prefix: "/admin" })
         const role = roleResult[0];
 
         if (!role) {
-            return error(404, "Role not found");
+            return error(404, { message: "Role not found" });
         }
 
         // Remove role from user
         const removed = await RoleRepository.removeRoleFromUser(params.userId, params.roleId);
 
         if (!removed) {
-            return error(400, "Failed to remove role or user doesn't have this role");
+            return error(400, { message: "Failed to remove role or user doesn't have this role" });
         }
 
         // Log audit event
