@@ -14,6 +14,7 @@ import { PasswordService } from "./password.service";
 import { TokenService } from "./token.service";
 import { EmailService } from "./email.service";
 import { MfaService } from "./mfa.service";
+import { transporter } from "@backend/mailer";
 
 /**
  * Service for authentication operations
@@ -26,7 +27,7 @@ export const AuthService = {
      * @param ipAddress Client IP address
      * @returns Object with success status and user/errors
      */
-    register: async (userData: RegisterUserInput, ipAddress?: string) => {
+    register: (mail: typeof transporter.sendMail) => async (userData: RegisterUserInput, ipAddress?: string) => {
         try {
             // Check if email is already registered
             const existingUser = await UserRepository.findByEmail(userData.email);
@@ -45,7 +46,7 @@ export const AuthService = {
             const emailToken = await AuthRepository.createEmailVerificationToken(user.id);
 
             // Send verification email
-            await EmailService.sendVerificationEmail(user.email, emailToken.token, user.displayName);
+            await EmailService.sendVerificationEmail(mail)(user.email, emailToken.token, user.displayName);
 
             // Log audit event
             await AuthRepository.logAuditEvent(
@@ -328,7 +329,7 @@ export const AuthService = {
      * @param ipAddress Client IP address
      * @returns Object with success status
      */
-    requestPasswordReset: async (email: string, ipAddress?: string) => {
+    requestPasswordReset: (mail: typeof transporter.sendMail) => async (email: string, ipAddress?: string) => {
         try {
             // Find user by email
             const user = await UserRepository.findByEmail(email);
@@ -344,7 +345,7 @@ export const AuthService = {
             const resetToken = await AuthRepository.createPasswordResetToken(user.id);
 
             // Send password reset email
-            await EmailService.sendPasswordResetEmail(user.email, resetToken.token);
+            await EmailService.sendPasswordResetEmail(mail)(user.email, resetToken.token);
 
             // Log audit event
             await AuthRepository.logAuditEvent(

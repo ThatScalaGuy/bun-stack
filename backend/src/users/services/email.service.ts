@@ -1,3 +1,4 @@
+import { transporter } from "../../mailer";
 /**
  * Service for handling email communication
  * Manages all email sending for user authentication workflows
@@ -9,7 +10,7 @@ export const EmailService = {
      * @param token Verification token
      * @param displayName User's display name
      */
-    sendVerificationEmail: async (email: string, token: string, displayName: string): Promise<void> => {
+    sendVerificationEmail: (mail: typeof transporter.sendMail) => async (email: string, token: string, displayName: string): Promise<void> => {
         // In a real implementation, this would use an email provider API
         console.log(`Sending verification email to ${email} with token ${token}`);
 
@@ -26,7 +27,7 @@ export const EmailService = {
      * @param email Recipient email address
      * @param token Password reset token
      */
-    sendPasswordResetEmail: async (email: string, token: string): Promise<void> => {
+    sendPasswordResetEmail: (mail: typeof transporter.sendMail) => async (email: string, token: string): Promise<void> => {
         // In a real implementation, this would use an email provider API
         console.log(`Sending password reset email to ${email} with token ${token}`);
 
@@ -42,7 +43,7 @@ export const EmailService = {
      * @param email Recipient email address
      * @param lockoutMinutes Duration of the lockout in minutes
      */
-    sendAccountLockoutNotification: async (email: string, lockoutMinutes: number): Promise<void> => {
+    sendAccountLockoutNotification: (mail: typeof transporter.sendMail) => async (email: string, lockoutMinutes: number): Promise<void> => {
         console.log(`Sending account lockout notification to ${email}. Account locked for ${lockoutMinutes} minutes.`);
 
         // TODO: Implement actual email sending with your preferred provider
@@ -54,7 +55,7 @@ export const EmailService = {
      * @param ipAddress IP address of the login attempt
      * @param date Date and time of the attempt
      */
-    sendSuspiciousActivityAlert: async (email: string, ipAddress: string, date: Date): Promise<void> => {
+    sendSuspiciousActivityAlert: (mail: typeof transporter.sendMail) => async (email: string, ipAddress: string, date: Date): Promise<void> => {
         console.log(`Sending suspicious activity alert to ${email} for login attempt from ${ipAddress} at ${date}`);
 
         // TODO: Implement actual email sending with your preferred provider

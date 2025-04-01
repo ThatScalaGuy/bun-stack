@@ -104,7 +104,7 @@ export const adminController = new Elysia({ prefix: "/admin" })
         // Log audit event
         await AuthRepository.logAuditEvent(
             "admin.set_user_status",
-            { userId: params.id, isActive: body.isActive }
+            { userId: params.userId, isActive: body.isActive }
         );
 
         return {

@@ -8,6 +8,7 @@ import {
 } from "../types";
 import { AuthService } from "../services/auth.service";
 import { authMiddleware } from "../middleware/auth.middleware";
+import { mailer } from "../../mailer";
 
 /**
  * Authentication controller
@@ -15,6 +16,7 @@ import { authMiddleware } from "../middleware/auth.middleware";
  */
 export const authController = new Elysia({ prefix: "/auth" })
     .use(authMiddleware)
+    .use(mailer)
     .onRequest(({ set }) => {
         set.headers["Access-Control-Allow-Credentials"] = "true";
     })
@@ -24,13 +26,13 @@ export const authController = new Elysia({ prefix: "/auth" })
      * POST /auth/register
      */
     .post("/register",
-        async ({ body, error, request, set }) => {
+        async ({ body, error, request, mail }) => {
             // Get client IP address
             const ipAddress = request.headers.get("X-Forwarded-For") ||
                 request.headers.get("CF-Connecting-IP") ||
                 "unknown";
 
-            const result = await AuthService.register(body, ipAddress);
+            const result = await AuthService.register(mail)(body, ipAddress);
 
             if (!result.success) {
                 return error(400, result.error);
@@ -149,17 +151,16 @@ export const authController = new Elysia({ prefix: "/auth" })
      * POST /auth/request-password-reset
      */
     .post("/request-password-reset",
-        async ({ body, request, set }) => {
+        async ({ body, request, set, mail }) => {
             // Get client IP address
             const ipAddress = request.headers.get("X-Forwarded-For") ||
                 request.headers.get("CF-Connecting-IP") ||
                 "unknown";
 
-            const result = await AuthService.requestPasswordReset(body.email, ipAddress);
+            const result = await AuthService.requestPasswordReset(mail)(body.email, ipAddress);
 
             if (!result.success) {
-                set.status = 400;
-                return { success: false, error: result.error };
+                return error(400, { error: result.error });
             }
 
             return {
