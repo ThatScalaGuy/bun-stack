@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router';
 import { RegistrationData } from '../../types/user';
 import { useAuth } from '../../hooks/useAuth';
 import styles from './RegisterForm.module.css';
+import { Alert } from '../../design-system';
 
 export const RegisterForm = () => {
     const { register: registerField, handleSubmit, formState: { errors }, watch } = useForm<RegistrationData & { confirmPassword: string }>();
@@ -15,8 +16,12 @@ export const RegisterForm = () => {
 
     const onSubmit = async (data: RegistrationData) => {
         try {
-            await register.mutateAsync(data);
-            setRegistrationSuccess(true);
+            await register.mutateAsync(data, {
+                onSuccess: () => {
+                    setRegistrationSuccess(true);
+                }
+            });
+
         } catch (error) {
             console.error('Registration error:', error);
         }
@@ -43,7 +48,11 @@ export const RegisterForm = () => {
     return (
         <div className={styles.container}>
             <h2>Create Your Account</h2>
-
+            {register.error && (
+                <Alert variant='danger'>
+                    {(register.error)?.message || 'An error occurred during registration'}
+                </Alert>
+            )}
             <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
                 <div className={styles.formGroup}>
                     <label htmlFor="displayName">Display Name</label>
@@ -133,12 +142,6 @@ export const RegisterForm = () => {
             <div className={styles.loginLink}>
                 Already have an account? <Link to="/login">Log in</Link>
             </div>
-
-            {register.error && (
-                <div className={styles.errorMessage}>
-                    {(register.error)?.message || 'An error occurred during registration'}
-                </div>
-            )}
         </div>
     );
 };

@@ -8,6 +8,7 @@ import {
     VerificationRequest,
 } from '../../types/user';
 
+
 export function useAuthQueries() {
     const backend = useBackend();
     const queryClient = useQueryClient();
@@ -27,8 +28,13 @@ export function useAuthQueries() {
 
     // Login
     const login = useMutation({
-        mutationFn: (credentials: LoginCredentials) =>
-            backend.api.auth.login.post(credentials).then(res => res.data),
+        mutationFn: async (credentials: LoginCredentials) => {
+            const { data, error } = await backend.api.auth.login.post(credentials);
+            if (error) {
+                throw new Error(error.value.message);
+            }
+            return data;
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['currentUser'] });
         }
@@ -45,8 +51,13 @@ export function useAuthQueries() {
 
     // Register
     const register = useMutation({
-        mutationFn: (data: RegistrationData) =>
-            backend.api.auth.register.post(data).then(res => res.data),
+        mutationFn: async (registrationData: RegistrationData) => {
+            const { data, error } = await backend.api.auth.register.post(registrationData);
+            if (error) {
+                throw new Error(error.value.message);
+            }
+            return data;
+        },
     });
 
     // Request password reset

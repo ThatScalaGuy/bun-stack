@@ -8,9 +8,7 @@
       "baseUrl": ".",
       "paths": {
           "@backend": ["./backend/src"],
-          "@backend/*": ["./backend/src/*"],
-          "@frontend": ["./frontend/src"],
-          "@frontend/*": ["./frontend/src/*"]
+          "@backend/*": ["./backend/src/*"]
       }
     }
   }
