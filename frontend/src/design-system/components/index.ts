@@ -18,3 +18,6 @@ export * from './Tabs';
 export * from './Toggle';
 export * from './Tooltip';
 export * from './Typography';
+export * from './InfoCard';
+export * from './InfoList';
+export * from './PageHeader';

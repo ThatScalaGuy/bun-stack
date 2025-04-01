@@ -1,4 +1,4 @@
-import { UserProfileForm } from '../components/user/UserProfileForm';
+import { UserProfileForm } from '../../components/user/UserProfileForm';
 import styles from './ProfilePage.module.css';
 
 export const ProfilePage = () => {

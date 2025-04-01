@@ -2,15 +2,13 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../../hooks/useAuth';
 import { UpdateProfileData } from '../../types/user';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useBackend } from '../../context/BackendContext';
+import { useProfileQueries } from '../../hooks/queries';
 import { FormGroup } from '../../design-system/components/FormGroup';
 import styles from './UserProfileForm.module.css';
 
 export const UserProfileForm = () => {
     const { user } = useAuth();
-    const backend = useBackend();
-    const queryClient = useQueryClient();
+    const { updateProfile } = useProfileQueries();
 
     const { register, handleSubmit, formState: { errors }, reset } = useForm<UpdateProfileData>();
 
@@ -23,14 +21,6 @@ export const UserProfileForm = () => {
             });
         }
     }, [user, reset]);
-
-    const updateProfile = useMutation({
-        mutationFn: (data: UpdateProfileData) =>
-            backend.api.users.me.put(data).then(res => res.data),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['currentUser'] });
-        }
-    });
 
     const onSubmit = (data: UpdateProfileData) => {
         updateProfile.mutate(data);
@@ -118,4 +108,4 @@ export const UserProfileForm = () => {
             )}
         </div>
     );
-};
+}

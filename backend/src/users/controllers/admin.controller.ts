@@ -21,7 +21,7 @@ export const adminController = new Elysia({ prefix: "/admin" })
      * Get all users
      * GET /admin/users
      */
-    .get("/users", async ({ set, requirePermission }) => {
+    .get("/users", async ({ requirePermission }) => {
         // Require admin permissions to manage users
         requirePermission(PERMISSIONS.ADMIN_MANAGE_USERS);
 
@@ -37,7 +37,6 @@ export const adminController = new Elysia({ prefix: "/admin" })
             .from(users);
 
         return {
-            success: true,
             users: usersList
         };
     })
@@ -46,11 +45,11 @@ export const adminController = new Elysia({ prefix: "/admin" })
      * Get user details by ID
      * GET /admin/users/:id
      */
-    .get("/users/:id", async ({ params, set, requirePermission }) => {
+    .get("/users/:userId", async ({ params, set, requirePermission }) => {
         // Require admin permissions to manage users
         requirePermission(PERMISSIONS.ADMIN_MANAGE_USERS);
 
-        const user = await UserRepository.findById(params.id);
+        const user = await UserRepository.findById(params.userId);
 
         if (!user) {
             set.status = 404;
@@ -58,7 +57,7 @@ export const adminController = new Elysia({ prefix: "/admin" })
         }
 
         // Get user roles
-        const userRoles = await RoleRepository.getUserRoles(params.id);
+        const userRoles = await RoleRepository.getUserRoles(params.userId);
 
         return {
             success: true,
@@ -78,7 +77,7 @@ export const adminController = new Elysia({ prefix: "/admin" })
         };
     }, {
         params: t.Object({
-            id: t.String()
+            userId: t.String()
         })
     })
 
@@ -86,22 +85,20 @@ export const adminController = new Elysia({ prefix: "/admin" })
      * Set user active status
      * PUT /admin/users/:id/status
      */
-    .put("/users/:id/status", async ({ params, body, set, requirePermission }) => {
+    .put("/users/:userId/status", async ({ params, body, error, requirePermission }) => {
         // Require admin permissions to manage users
         requirePermission(PERMISSIONS.ADMIN_MANAGE_USERS);
 
-        const user = await UserRepository.findById(params.id);
+        const user = await UserRepository.findById(params.userId);
 
         if (!user) {
-            set.status = 404;
-            return { success: false, error: "User not found" };
+            return error(404, "User not found");
         }
 
-        const updated = await UserRepository.setActiveStatus(params.id, body.isActive);
+        const updated = await UserRepository.setActiveStatus(params.userId, body.isActive);
 
         if (!updated) {
-            set.status = 400;
-            return { success: false, error: "Failed to update user status" };
+            return error(400, "Failed to update user status");
         }
 
         // Log audit event
@@ -116,7 +113,7 @@ export const adminController = new Elysia({ prefix: "/admin" })
         };
     }, {
         params: t.Object({
-            id: t.String()
+            userId: t.String()
         }),
         body: t.Object({
             isActive: t.Boolean()
@@ -127,15 +124,14 @@ export const adminController = new Elysia({ prefix: "/admin" })
      * Assign a role to a user
      * POST /admin/users/:userId/roles
      */
-    .post("/users/:userId/roles", async ({ params, body, set, requirePermission }) => {
+    .post("/users/:userId/roles", async ({ params, body, error, requirePermission }) => {
         // Require admin permissions to manage roles
         requirePermission(PERMISSIONS.ADMIN_MANAGE_ROLES);
 
         const user = await UserRepository.findById(params.userId);
 
         if (!user) {
-            set.status = 404;
-            return { success: false, error: "User not found" };
+            return error(404, "User not found");
         }
 
         // Find role by name or ID
@@ -151,16 +147,14 @@ export const adminController = new Elysia({ prefix: "/admin" })
         }
 
         if (!role) {
-            set.status = 404;
-            return { success: false, error: "Role not found" };
+            return error(404, "Role not found");
         }
 
         // Assign role to user
         const assigned = await RoleRepository.assignRoleToUser(params.userId, role.id);
 
         if (!assigned) {
-            set.status = 400;
-            return { success: false, error: "Failed to assign role or role already assigned" };
+            return error(400, "Failed to assign role or role already assigned");
         }
 
         // Log audit event
@@ -187,15 +181,14 @@ export const adminController = new Elysia({ prefix: "/admin" })
      * Remove a role from a user
      * DELETE /admin/users/:userId/roles/:roleId
      */
-    .delete("/users/:userId/roles/:roleId", async ({ params, set, requirePermission }) => {
+    .delete("/users/:userId/roles/:roleId", async ({ params, error, requirePermission }) => {
         // Require admin permissions to manage roles
         requirePermission(PERMISSIONS.ADMIN_MANAGE_ROLES);
 
         const user = await UserRepository.findById(params.userId);
 
         if (!user) {
-            set.status = 404;
-            return { success: false, error: "User not found" };
+            return error(404, "User not found");
         }
 
         // Check if role exists
@@ -207,16 +200,14 @@ export const adminController = new Elysia({ prefix: "/admin" })
         const role = roleResult[0];
 
         if (!role) {
-            set.status = 404;
-            return { success: false, error: "Role not found" };
+            return error(404, "Role not found");
         }
 
         // Remove role from user
         const removed = await RoleRepository.removeRoleFromUser(params.userId, params.roleId);
 
         if (!removed) {
-            set.status = 400;
-            return { success: false, error: "Failed to remove role or user doesn't have this role" };
+            return error(400, "Failed to remove role or user doesn't have this role");
         }
 
         // Log audit event

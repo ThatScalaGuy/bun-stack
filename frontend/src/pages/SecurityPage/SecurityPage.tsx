@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useAuth } from '../hooks/useAuth';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useBackend } from '../context/BackendContext';
+import { useAuth } from '../../hooks/useAuth';
+import { useProfileQueries, useMfaQueries } from '../../hooks/queries';
 import styles from './SecurityPage.module.css';
-import { Button } from '../components/ui/Button';
+import { Button } from '../../design-system';
+import { PageHeader } from '../../design-system/components';
 
 type ChangePasswordFormData = {
     currentPassword: string;
@@ -18,8 +18,9 @@ type MfaSetupFormData = {
 
 export const SecurityPage = () => {
     const { user } = useAuth();
-    const backend = useBackend();
-    const queryClient = useQueryClient();
+    const { changePassword } = useProfileQueries();
+    const { setupMfa, verifyMfa, disableMfa: removeMfa } = useMfaQueries();
+
     const [mfaSetupData, setMfaSetupData] = useState<{
         secret: string;
         qrCodeUrl: string;
@@ -43,89 +44,73 @@ export const SecurityPage = () => {
         formState: { errors: mfaErrors },
     } = useForm<MfaSetupFormData>();
 
-    // Change password mutation
-    const changePassword = useMutation({
-        mutationFn: (data: { currentPassword: string; newPassword: string }) =>
-            backend.api.users.me.password.put(data).then(res => res.data),
-        onSuccess: () => {
-            resetPasswordForm();
-            // Show success notification
-        },
-    });
-
-    // MFA setup mutation
-    const setupMfa = useMutation({
-        mutationFn: (data: { password: string }) =>
-            backend.api.users.me.mfa.setup.post(data).then(res => res.data),
-        onSuccess: (data) => {
-            setMfaSetupData({
-                secret: data.secret,
-                qrCodeUrl: data.qrCodeUrl,
-                mfaId: data.mfaId
-            });
-            setStep('setup');
-        },
-    });
-
-    // MFA verification mutation
-    const verifyMfa = useMutation({
-        mutationFn: (data: { mfaId: string; code: string }) =>
-            backend.api.users.me.mfa.verify.post(data).then(res => res.data),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['currentUser'] });
-            setStep('password');
-            setMfaSetupData(null);
-        },
-    });
-
-    // MFA removal mutation
-    const removeMfa = useMutation({
-        mutationFn: () =>
-            backend.api.users.me.mfa.delete().then(res => res.data),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['currentUser'] });
-        },
-    });
-
     const onChangePasswordSubmit = (data: ChangePasswordFormData) => {
         if (data.newPassword !== data.confirmPassword) {
             // Show error notification
             return;
         }
-
-        changePassword.mutate({
-            currentPassword: data.currentPassword,
-            newPassword: data.newPassword,
-        });
+        changePassword.mutate(
+            {
+                currentPassword: data.currentPassword,
+                newPassword: data.newPassword,
+            },
+            {
+                onSuccess: () => {
+                    resetPasswordForm();
+                    // Show success notification
+                },
+            }
+        );
     };
 
     const onSetupMfaSubmit = (data: MfaSetupFormData) => {
-        setupMfa.mutate({ password: data.password });
+        setupMfa.mutate(
+            { password: data.password },
+            {
+                onSuccess: (data) => {
+                    setMfaSetupData({
+                        secret: data.secret,
+                        qrCodeUrl: data.qrCodeUrl,
+                        mfaId: data.mfaId,
+                    });
+                    setStep('setup');
+                },
+            }
+        );
     };
 
     const onVerifyMfaSubmit = () => {
         if (!mfaSetupData) return;
-
-        verifyMfa.mutate({
-            mfaId: mfaSetupData.mfaId,
-            code: verificationCode,
-        });
+        verifyMfa.mutate(
+            {
+                mfaId: mfaSetupData.mfaId,
+                code: verificationCode,
+            },
+            {
+                onSuccess: () => {
+                    setStep('password');
+                    setMfaSetupData(null);
+                },
+            }
+        );
     };
 
     const handleRemoveMfa = () => {
-        if (window.confirm('Are you sure you want to disable two-factor authentication? This will make your account less secure.')) {
+        if (
+            window.confirm(
+                'Are you sure you want to disable two-factor authentication? This will make your account less secure.'
+            )
+        ) {
             removeMfa.mutate();
         }
     };
 
     return (
         <div className={styles.container}>
-            <header className={styles.header}>
-                <div>
-                    <h1 className={styles.title}>Security Settings</h1>
-                    <p className={styles.subtitle}>Manage your account security</p>
-                </div>
-            </header>
+            <PageHeader
+                title="Security Settings"
+                subtitle="Manage your account security"
+            />
 
             <div className={styles.grid}>
                 <div className={styles.mainSection}>
@@ -349,8 +334,20 @@ export const SecurityPage = () => {
                         <div className={styles.activityItem}>
                             <div className={styles.activityIcon}>
                                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 01-2-2h4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                    <path d="M12 15V3M8 7l4-4 4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    <path
+                                        d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 01-2-2h4"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    />
+                                    <path
+                                        d="M12 15V3M8 7l4-4 4 4"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    />
                                 </svg>
                             </div>
                             <div>
@@ -362,8 +359,22 @@ export const SecurityPage = () => {
                         <div className={styles.activityItem}>
                             <div className={styles.activityIcon}>
                                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M19 21v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                    <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    <path
+                                        d="M19 21v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    />
+                                    <circle
+                                        cx="12"
+                                        cy="7"
+                                        r="4"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    />
                                 </svg>
                             </div>
                             <div>
@@ -372,7 +383,9 @@ export const SecurityPage = () => {
                             </div>
                         </div>
                         <div className={styles.viewAllActivity}>
-                            <Button variant="text" href="/activity">View All Activity →</Button>
+                            <Button variant="text" href="/activity">
+                                View All Activity →
+                            </Button>
                         </div>
                     </div>
                 </aside>
