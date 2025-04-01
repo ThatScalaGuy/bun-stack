@@ -9,6 +9,7 @@
   transition: width var(--transition-normal);
   overflow: hidden;
   flex-shrink: 0;
+  z-index: 10; /* Ensure sidebar is above other content but below tooltips */
 }
 
 .sidebar.collapsed {

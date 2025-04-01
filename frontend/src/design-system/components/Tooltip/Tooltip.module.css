@@ -12,6 +12,12 @@
   pointer-events: none;
 }
 
+.tooltip.visible {
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto;
+}
+
 .visible {
   visibility: visible;
   opacity: 1;

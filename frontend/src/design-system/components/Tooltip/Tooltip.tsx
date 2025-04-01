@@ -19,7 +19,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
     children
 }) => {
     const [isVisible, setIsVisible] = useState(false);
-    const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+    const [timeoutId, setTimeoutId] = useState<Timer | null>(null);
 
     const handleMouseEnter = () => {
         const id = setTimeout(() => {
@@ -40,12 +40,16 @@ export const Tooltip: React.FC<TooltipProps> = ({
         onMouseEnter: (e: React.MouseEvent) => {
             handleMouseEnter();
             // Call the original handler if it exists
-            children.props.onMouseEnter?.(e);
+            if (children.props.onMouseEnter) {
+                children.props.onMouseEnter(e);
+            }
         },
         onMouseLeave: (e: React.MouseEvent) => {
             handleMouseLeave();
             // Call the original handler if it exists
-            children.props.onMouseLeave?.(e);
+            if (children.props.onMouseLeave) {
+                children.props.onMouseLeave(e);
+            }
         },
     });
 
