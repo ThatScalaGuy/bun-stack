@@ -16,15 +16,17 @@
     "elysia": "^1.2.25",
     "jose": "^6.0.10",
     "node-2fa": "^2.0.3",
+    "nodemailer": "^6.10.0",
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@types/nodemailer": "^6.4.17",
     "bun-types": "^1.2.7",
     "drizzle-kit": "^0.30.6",
     "typescript": "^5.0.0"
   },
   "override": {
-      "@sinclair/typebox": "0.34.0"
+    "@sinclair/typebox": "0.34.0"
   },
   "module": "src/index.js"
 }
