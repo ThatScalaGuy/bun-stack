@@ -56,7 +56,7 @@ const routes: RouteObject[] = [
         element: <ResetPasswordPage />,
     },
     {
-        path: '/verify-account',
+        path: '/verify-email',
         element: <AccountVerification />,
     },
 

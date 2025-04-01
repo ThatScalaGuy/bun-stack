@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router';
 import { useAuth } from '../../hooks/useAuth';
 import styles from './AccountVerification.module.css';
@@ -8,30 +8,14 @@ export const AccountVerification = () => {
     const navigate = useNavigate();
     const token = searchParams.get('token');
     const { verifyAccount } = useAuth();
-    const [verificationStatus, setVerificationStatus] = useState<'pending' | 'success' | 'error'>('pending');
-    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
-        if (token) {
-            verifyAccount.mutate(
-                { token },
-                {
-                    onSuccess: () => {
-                        setVerificationStatus('success');
-                    },
-                    onError: (error) => {
-                        setVerificationStatus('error');
-                        setErrorMessage(error.message || 'Verification failed. The token may be invalid or expired.');
-                    }
-                }
-            );
-        } else {
-            setVerificationStatus('error');
-            setErrorMessage('Verification token is missing.');
-        }
-    }, [token, verifyAccount]);
+        verifyAccount.mutate(
+            { token: token || "" }
+        );
+    }, []);
 
-    if (verificationStatus === 'pending') {
+    if (verifyAccount.isPending) {
         return (
             <div className={styles.container}>
                 <div className={styles.loadingContainer}>
@@ -42,7 +26,7 @@ export const AccountVerification = () => {
         );
     }
 
-    if (verificationStatus === 'success') {
+    if (verifyAccount.isSuccess) {
         return (
             <div className={styles.container}>
                 <div className={styles.successMessage}>
@@ -64,7 +48,7 @@ export const AccountVerification = () => {
         <div className={styles.container}>
             <div className={styles.errorMessage}>
                 <h2>Verification Failed</h2>
-                <p>{errorMessage}</p>
+                <p>{verifyAccount.error?.message || 'An unknown error occurred.'}</p>
                 <div className={styles.actionLinks}>
                     <Link to="/login" className={styles.link}>
                         Login

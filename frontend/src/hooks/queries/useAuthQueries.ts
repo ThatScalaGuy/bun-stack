@@ -74,8 +74,11 @@ export function useAuthQueries() {
 
     // Verify account
     const verifyAccount = useMutation({
-        mutationFn: (data: VerificationRequest) =>
-            backend.api.auth['verify-email'].post(data).then(res => res.data),
+        mutationFn: async (data: VerificationRequest) => {
+            const res = await backend.api.auth['verify-email'].post(data)
+            if (res.error) throw new Error(res.error.value.message);
+            return res.data
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['currentUser'] });
         }

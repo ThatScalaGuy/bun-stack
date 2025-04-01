@@ -8,7 +8,7 @@ const DATA_PATH = Bun.env.DATA_PATH || "./.data";
 
 // Create sqlite database connection
 const sqlite = new Database(`${DATA_PATH}/application.db`);
-export const connection = drizzle(sqlite);
+export const connection = drizzle(sqlite, { logger: true });
 
 // Run migrations
 migrate(connection, { migrationsFolder: "./drizzle" });
